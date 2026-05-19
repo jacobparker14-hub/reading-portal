@@ -192,7 +192,7 @@ textarea{resize:vertical;line-height:1.6;}
           <span class="wc-badge wc-below" id="wc-badge">0 words</span>
         </div>
         <div class="wc-bar-track"><div class="wc-bar" id="wc-bar"></div></div>
-        <div class="note">Your reflection is private — not graded or shared without permission. After submitting, you'll be asked two or three follow-up questions about the book based on what you wrote. Answer as you go; no looking things up.</div>
+        <div class="note">Your reflection is private, not graded or shared. After submitting, you'll be asked two or three follow-up questions about the book based on what you wrote. Answer as you go; no looking things up.</div>
       </div>
     </div>
 
@@ -492,25 +492,6 @@ const DEFAULT_QS = [
 ];
 
 let selTier=null, selPts=0, selBonusPts=0, selBonusDesc=[], curBook=null, genQs=[], studYear=null, aiAvailable=false;
-
-// ── Check if proxy is live ──────────────────────────────────────
-async function checkProxy(){
-  if(!PROXY_URL){setOffline();return;}
-  try{
-    const r = await fetch(PROXY_URL, {method:"GET", signal:AbortSignal.timeout(4000)});
-    if(r.ok){setOnline();}else{setOffline();}
-  }catch{setOffline();}
-}
-function setOnline(){
-  aiAvailable=true;
-  const b=document.getElementById("conn-banner");
-  b.className="proxy-banner connected";
-  b.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><polyline points="20 6 9 17 4 12"/></svg><span><strong>AI questions: live.</strong> Follow-up questions are generated in real time by Claude based on your specific reflection.</span>';
-}
-function setOffline(){
-  aiAvailable=false;
-  // banner already set to offline state in HTML
-}
 
 // ── Utility ─────────────────────────────────────────────────────
 function wc(s){return s.trim().split(/\s+/).filter(Boolean).length;}
