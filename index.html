@@ -714,9 +714,12 @@ Student reflection: "${reflection}"
 
 Generate exactly 3 follow-up questions. Rules:
 - Short and direct — one sentence each, no more
-- Sound like a teacher asking in person, not an AI
+- - Sound like a teacher asking in person, not an AI — blunt and brief, like a follow-up in a classroom discussion
+- Never start a question with a compliment or reference to what the student said ("You mentioned...", "That's a good point...", "Given your observation...") — just ask the question directly
+- Maximum 15 words per question
 - At least one must reference something specific the student wrote
 - At least one must ask about a concrete moment, scene or character in the book
+- Calibrate difficulty to Tier ${selTier}/5 — Tier 1 questions can be general, Tier 5 must require specific textual knowledge that only someone who read the book would have
 - No preamble, no numbering, no "That's a great point" style openers
 - No flattery or academic language
 
@@ -785,10 +788,11 @@ ${qaText}
 
 Flag ONLY if answers are clearly wrong about the book, obviously made up, or show no knowledge of it at all. Vague but plausible = verified.
 
-Respond ONLY with JSON: {"verdict":"verified" or "flagged","feedback":"one short sentence to the student, plain and direct, no flattery"}`;
+Respond ONLY with JSON: {"verdict":"verified" or "flagged","feedback":"one short sentence to the student, plain and direct, no flattery","ai_flag":true or false}`;
       const raw=await callClaude(prompt);
       const result=JSON.parse(raw);
       verdict=result.verdict; feedback=result.feedback;
+      if(result.ai_flag) verdict="flagged";
     } else {
       // Offline heuristic: flag only if answers are extremely short across the board
       await new Promise(res=>setTimeout(res,800));
