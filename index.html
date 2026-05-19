@@ -549,13 +549,22 @@ function onTitleInput(){
   const matches=BOOKS.filter(b=>b.title.toLowerCase().startsWith(val)).slice(0,5);
   if(!matches.length){area.innerHTML="";return;}
   area.innerHTML='<div class="suggest-label">Suggestions</div>'+
-    matches.map(b=>`<span class="suggest-pill" onclick="fillBook(${JSON.stringify(b.title)},${JSON.stringify(b.author)})">${b.title} — ${b.author}</span>`).join("");
+    matches.map(b=>`<span class="suggest-pill" data-title=${JSON.stringify(b.title)} data-author=${JSON.stringify(b.author)}>${b.title} — ${b.author}</span>`).join("");
 }
 function fillBook(t,a){
   document.getElementById("book-title").value=t;
   document.getElementById("book-author").value=a;
   document.getElementById("suggest-area").innerHTML="";
 }
+// Event delegation — works reliably on Safari including touch
+document.addEventListener("click", function(e){
+  const pill=e.target.closest(".suggest-pill");
+  if(pill){ e.preventDefault(); fillBook(pill.dataset.title, pill.dataset.author); }
+});
+document.addEventListener("touchend", function(e){
+  const pill=e.target.closest(".suggest-pill");
+  if(pill){ e.preventDefault(); fillBook(pill.dataset.title, pill.dataset.author); }
+});
 
 // ── Open Library lookup ─────────────────────────────────────────
 async function lookupBook(){
