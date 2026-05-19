@@ -664,11 +664,20 @@ async function callClaude(prompt){
   const r=await fetch(PROXY_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({prompt, system:"You are a helpful school reading assistant. Respond only with the JSON requested."})
+    body:JSON.stringify({prompt, system:"You are a helpful school reading assistant. Respond only with the JSON requested. Do not include any markdown formatting, code fences, or backticks. Return raw JSON only."})
   });
   if(!r.ok) throw new Error("proxy-error");
   const data=await r.json();
-  return data.text.trim().replace(/```json|```/g,"").trim();
+  // Aggressively clean the response
+  let text=data.text||"";
+  text=text.trim();
+  text=text.replace(/^```json\s*/i,"").replace(/^```\s*/,"").replace(/```\s*$/,"").trim();
+  // Extract JSON array or object if embedded in prose
+  const arrMatch=text.match(/\[[\s\S]*\]/);
+  const objMatch=text.match(/\{[\s\S]*\}/);
+  if(arrMatch) text=arrMatch[0];
+  else if(objMatch) text=objMatch[0];
+  return text;
 }
 
 // ── Stage 2: Questions ───────────────────────────────────────────
