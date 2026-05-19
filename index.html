@@ -503,7 +503,7 @@ let selTier=null, selPts=0, selBonusPts=0, selBonusDesc=[], curBook=null, genQs=
 async function checkProxy(){
   if(!PROXY_URL){setOffline();return;}
   try{
-    const r = await fetch(PROXY_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:"ping",system:"reply ok"}),signal:AbortSignal.timeout(4000)});
+    const r = await fetch(PROXY_URL, {method:"GET", signal:AbortSignal.timeout(4000)});
     if(r.ok){setOnline();}else{setOffline();}
   }catch{setOffline();}
 }
